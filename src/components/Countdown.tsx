@@ -1,19 +1,12 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { Clock, Users } from "lucide-react";
 
 const Countdown = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
-  const [seatsLeft, setSeatsLeft] = useState(73);
-
-  // Simulate seat countdown
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeatsLeft((prev) => (prev > 12 ? prev - 1 : prev));
-    }, 45000);
-    return () => clearInterval(interval);
-  }, []);
+  const [seatsLeft] = useState(100);
+  const [enrolled] = useState(0);
 
   return (
     <section className="section-padding py-16" ref={ref}>
@@ -39,7 +32,7 @@ const Countdown = () => {
           </p>
           <div className="flex items-center justify-center gap-2 text-primary-foreground/60 text-sm">
             <Users size={14} />
-            <span className="tabular-nums">{100 - seatsLeft}</span> students already enrolled this week
+            <span className="tabular-nums">{enrolled}</span> students already enrolled this week
           </div>
         </div>
       </motion.div>
