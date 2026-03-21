@@ -32,7 +32,7 @@ const Countdown = () => {
           </p>
           <div className="flex items-center justify-center gap-2 text-primary-foreground/60 text-sm">
             <Users size={14} />
-            <span className="tabular-nums">{100 - seatsLeft}</span> students already enrolled this week
+            <span className="tabular-nums">{enrolled}</span> students already enrolled this week
           </div>
         </div>
       </motion.div>
