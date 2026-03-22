@@ -10,6 +10,7 @@ const courses = [
     icon: Terminal,
     badge: "Foundation",
     badgeClass: "bg-secondary text-secondary-foreground",
+    duration:"6 months",
     description: "Master C programming and data structures from scratch.",
   },
   {
@@ -18,6 +19,7 @@ const courses = [
     icon: Code,
     badge: "Popular",
     badgeClass: "badge-popular",
+    duration:"6 months",
     description: "Python fundamentals with algorithmic problem solving.",
   },
   {
@@ -26,14 +28,16 @@ const courses = [
     icon: Database,
     badge: "Enterprise",
     badgeClass: "bg-secondary text-secondary-foreground",
+    duration:"6 months",
     description: "Object-oriented Java with core data structures.",
   },
   {
     name: "Web Development + AI",
-    price: 2999,
+    price: 2499,
     icon: Globe,
     badge: "AI Powered",
     badgeClass: "badge-ai",
+    duration:"1 year",
     description: "Full-stack web dev enhanced with AI tools and workflows.",
   },
   {
@@ -42,14 +46,16 @@ const courses = [
     icon: Brain,
     badge: "Trending",
     badgeClass: "badge-popular",
+    duration:"1 year",
     description: "End-to-end ML pipeline: data, models, deployment.",
   },
   {
     name: "App Development + AI",
-    price: 2999,
+    price: 2499,
     icon: Smartphone,
     badge: "AI Powered",
     badgeClass: "badge-ai",
+    duration:"1 year",
     description: "Build cross-platform apps with AI-assisted development.",
   },
 ];
@@ -104,6 +110,11 @@ const Courses = () => {
                 <h3 className="font-heading font-semibold text-lg text-foreground mb-2">
                   {course.name}
                 </h3>
+                <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                ⏱ {course.duration}
+                </span>
+                </div>
                 <p className="text-sm text-muted-foreground mb-6 flex-1">
                   {course.description}
                 </p>

@@ -3,7 +3,20 @@ import { Users, GraduationCap, Award, BookOpen } from "lucide-react";
 
 const About = () => {
   return (
-    <div className="site-root min-h-screen pt-32 pb-20 px-6">
+    
+    <div className="site-root min-h-screen pt-32 pb-20 px-6 relative">
+      <img 
+      src="/WhatsApp Image 2026-03-22 at 10.08.21 PM.jpeg"
+      alt="left-logo"
+      className="absolute top-6 left-6 h-18 w-14 object-contain"
+    />
+
+    {/* Top Right Logo */}
+    <img 
+      src="/logo2.png"
+      alt="right-logo"
+      className="absolute top-6 right-6 h-25 w-14 object-contain"
+    />
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <motion.div 
@@ -53,7 +66,7 @@ const About = () => {
           
           <section>
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <GraduationCap className="text-primary" /> Why "Code Vichar"?
+              <GraduationCap className="text-primary" /> Why "Code Vichar x Kodeable"?
             </h2>
             <p className="text-muted-foreground leading-relaxed">
               "Vichar" means thought. We don't just teach you how to write lines of code; we teach 

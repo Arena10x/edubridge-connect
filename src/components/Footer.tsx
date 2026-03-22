@@ -20,6 +20,8 @@ const Footer = () => {
           <div className="flex flex-col gap-3">
             <h4 className="text-sm font-bold uppercase tracking-widest text-foreground">Contact Us</h4>
             <div className="flex flex-col gap-2">
+
+              
               <a 
                 href="tel:+91 891 048 9989" 
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors font-medium"

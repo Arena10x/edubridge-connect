@@ -34,8 +34,19 @@ const Navbar = () => {
     >
       <div className="mx-auto max-w-6xl mt-3">
         <div className="glass-card rounded-2xl px-6 py-3 flex items-center justify-between">
-          <a href="#" className="font-heading font-bold text-lg tracking-tight text-foreground">
+          <a href="#" className="flex items-center gap-2 font-heading font-bold text-lg tracking-tight text-foreground">
+          <img 
+              src="/WhatsApp Image 2026-03-22 at 10.08.21 PM.jpeg" 
+              alt="logo" 
+              className="h-8 w-8 object-contain"
+            />
             CODE VICHAR <span className="text-accent">×</span> KODEABLE
+
+            <img 
+              src="/logo2.png"
+              alt="logo-right"
+              className="h-15 w-10 object-contain ml-1"
+            />
           </a>
 
           {/* Desktop */}
