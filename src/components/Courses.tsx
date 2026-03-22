@@ -29,7 +29,7 @@ const courses = [
     description: "Object-oriented Java with core data structures.",
   },
   {
-    name: "Web Development with AI",
+    name: "Web Development + AI",
     price: 2999,
     icon: Globe,
     badge: "AI Powered",
@@ -45,7 +45,7 @@ const courses = [
     description: "End-to-end ML pipeline: data, models, deployment.",
   },
   {
-    name: "App Development with AI",
+    name: "App Development + AI",
     price: 2999,
     icon: Smartphone,
     badge: "AI Powered",

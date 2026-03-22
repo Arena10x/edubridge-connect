@@ -13,12 +13,8 @@ const faqs = [
     a: "Our instructors are working professionals from top tech companies with 5+ years of industry experience. They bring real-world project knowledge into every session.",
   },
   {
-    q: "Are courses live or recorded?",
-    a: "Courses include live sessions with recorded replays. You get lifetime access to all recordings and materials after enrollment.",
-  },
-  {
     q: "What if I miss a class?",
-    a: "No worries — every session is recorded and uploaded within 24 hours. You can also ask questions asynchronously on our community forum.",
+    a: "No worries — Will Provide Extra classes. You can also ask questions asynchronously on our community forum.",
   },
   {
     q: "How do coupon codes work?",

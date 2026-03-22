@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon, Lock } from "lucide-react";
 
 const navLinks = [
   { label: "Courses", href: "#courses" },
@@ -12,6 +12,18 @@ const navLinks = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const stored = window.localStorage.getItem("edubridge-theme");
+    if (stored) return stored === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", isDark);
+    window.localStorage.setItem("edubridge-theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   return (
     <motion.nav
@@ -37,6 +49,15 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+           
+            <button
+              onClick={() => setIsDark((prev) => !prev)}
+              className="ml-2 p-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors"
+              aria-label="Toggle dark mode"
+              type="button"
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             <a
               href="#register"
               className="ml-2 px-5 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity active:scale-[0.97]"
@@ -73,6 +94,23 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+            <a
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-3 rounded-lg hover:bg-secondary transition-colors"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                <Lock size={14} className="text-primary" />
+                Admin
+              </span>
+            </a>
+            <button
+              onClick={() => setIsDark((prev) => !prev)}
+              className="w-full mt-2 px-4 py-3 text-sm font-semibold rounded-xl border border-border text-foreground hover:bg-secondary transition-colors"
+              type="button"
+            >
+              {isDark ? "Switch to Light" : "Switch to Dark"}
+            </button>
             <a
               href="#register"
               onClick={() => setOpen(false)}

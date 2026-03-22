@@ -78,7 +78,7 @@ const Hero = () => {
           className="mt-16 flex items-center justify-center gap-8 sm:gap-12 text-center"
         >
           {[
-            { value: "0", label: "Students Enrolled" },
+            { value: "54", label: "Students Enrolled" },
             { value: "6", label: "Industry Courses" },
             { value: "94%", label: "Completion Rate" },
           ].map((stat) => (

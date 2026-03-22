@@ -16,6 +16,8 @@ const Registration = () => {
   const inView = useInView(ref, { once: true, amount: 0.15 });
   const [submitted, setSubmitted] = useState(false);
   const [couponMsg, setCouponMsg] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -37,10 +39,34 @@ const Registration = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, this would POST to backend
-    setSubmitted(true);
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await fetch(`${apiBase}/api/registrations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+      console.error("Backend Error 👉", data);
+      throw new Error(data.message || data.error || "Failed to submit");
+    }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error("Frontend Error 👉", err);
+      setError(err.message || "Something went wrong");
+      }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -159,10 +185,12 @@ const Registration = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-heading font-semibold text-base hover:opacity-90 transition-opacity active:scale-[0.97]"
+            disabled={isSubmitting}
+            className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-heading font-semibold text-base hover:opacity-90 transition-opacity active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Register & Proceed to Payment
+            {isSubmitting ? "Submitting..." : "Register & Proceed to Payment"}
           </button>
+          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
         </motion.form>
       </div>
     </section>
