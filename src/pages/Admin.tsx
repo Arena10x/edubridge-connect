@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from 'xlsx';
+import { getApiBase, safeJson } from "@/lib/api";
 
 type Registration = {
   id: number;
@@ -29,10 +30,7 @@ const Admin = () => {
     return window.localStorage.getItem("edubridge-admin-auth") === "true";
   });
 
-  const apiBase = useMemo(
-    () => import.meta.env.VITE_API_URL || "http://localhost:5000",
-    []
-  );
+  const apiBase = useMemo(() => getApiBase(), []);
   const adminPassword = useMemo(
     () => import.meta.env.VITE_ADMIN_PASSWORD || "admin123",
     []
@@ -43,9 +41,9 @@ const Admin = () => {
     setError("");
     try {
       const response = await fetch(`${apiBase}/api/registrations`);
-      const data = await response.json();
+      const data = await safeJson<Registration[]>(response);
       if (!response.ok) {
-        throw new Error(data?.error || "Failed to load registrations");
+        throw new Error((data as any)?.error || "Failed to load registrations");
       }
       setRows(Array.isArray(data) ? data : []);
     } catch (err: any) {
@@ -72,14 +70,9 @@ const Admin = () => {
   };
 
   const exportToExcel = () => {
-    // 1. Prepare the data (removing any circular references if they existed)
     const worksheet = XLSX.utils.json_to_sheet(rows);
-    
-    // 2. Create a new workbook
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
-    
-    // 3. Generate the file and trigger download
     XLSX.writeFile(workbook, `Registrations_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
@@ -131,48 +124,48 @@ const Admin = () => {
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-      {isAuthed && (
-        <>
-          <button
-            onClick={loadRows}
-            className="px-4 py-2 rounded-xl border border-border bg-background text-foreground hover:opacity-90 transition"
-          >
-            Refresh
-          </button>
+              {isAuthed && (
+                <>
+                  <button
+                    onClick={loadRows}
+                    className="px-4 py-2 rounded-xl border border-border bg-background text-foreground hover:opacity-90 transition"
+                  >
+                    Refresh
+                  </button>
 
-          <button 
-            onClick={startCampaign} 
-            className="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition"
-          >
-            Start 24h Timer
-          </button>
+                  <button
+                    onClick={startCampaign}
+                    className="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition"
+                  >
+                    Start 24h Timer
+                  </button>
 
-          <button 
-            onClick={stopCampaign} 
-            className="px-4 py-2 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition"
-          >
-            Reset Timer
-          </button>
+                  <button
+                    onClick={stopCampaign}
+                    className="px-4 py-2 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition"
+                  >
+                    Reset Timer
+                  </button>
 
-          {rows.length > 0 && (
-            <button
-              onClick={exportToExcel}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-            >
-              Export Excel
-            </button>
-          )}
+                  {rows.length > 0 && (
+                    <button
+                      onClick={exportToExcel}
+                      className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                    >
+                      Export Excel
+                    </button>
+                  )}
 
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 rounded-xl border border-border text-foreground hover:bg-secondary transition"
-          >
-            Logout
-          </button>
-        </>
-      )}
-    </div>
-  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 rounded-xl border border-border text-foreground hover:bg-secondary transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
 
           <div className="glass-card rounded-3xl p-6">
             {!isAuthed ? (
@@ -224,7 +217,7 @@ const Admin = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {rows.map((row:Registration) => (
+                    {rows.map((row: Registration) => (
                       <tr
                         key={row.id}
                         className="border-b border-border/60 last:border-b-0"
@@ -233,7 +226,7 @@ const Admin = () => {
                         <td className="py-2 pr-3">{row.name}</td>
                         <td className="py-2 pr-3">{row.email}</td>
                         <td className="py-2 pr-3">{row.phone}</td>
-                        <td className="py-2 pr-3">{row.course}</td> 
+                        <td className="py-2 pr-3">{row.course}</td>
                         <td className="py-2 pr-3">{formatCoupon(row.coupon)}</td>
                         <td className="py-2 pr-3">
                           {new Date(row.created_at).toLocaleString()}

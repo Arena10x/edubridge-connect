@@ -6,7 +6,7 @@ const About = () => {
     
     <div className="site-root min-h-screen pt-32 pb-20 px-6 relative">
       <img 
-      src="/WhatsApp Image 2026-03-22 at 10.08.21 PM.jpeg"
+      src="/Codevichar.jpeg" 
       alt="left-logo"
       className="absolute top-6 left-6 h-18 w-14 object-contain"
     />

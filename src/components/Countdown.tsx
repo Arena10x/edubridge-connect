@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Clock, Users } from "lucide-react";
 import { getDiscountInfo } from "@/lib/discount";
+import { getApiBase, safeJson } from "@/lib/api";
 
 const Countdown = () => {
   const ref = useRef(null);
@@ -21,10 +22,10 @@ const Countdown = () => {
   useEffect(() => {
     const loadCount = async () => {
       try {
-        const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const apiBase = getApiBase();
         const response = await fetch(`${apiBase}/api/registrations/count`);
         if (!response.ok) return;
-        const data = await response.json();
+        const data = await safeJson<{ count: number }>(response);
         setDiscountCount(Number(data?.count || 0));
       } catch {
         // Ignore count errors for countdown display.

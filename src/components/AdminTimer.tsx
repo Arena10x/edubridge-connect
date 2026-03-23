@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { getDiscountInfo } from "@/lib/discount";
+import { getApiBase, safeJson } from "@/lib/api";
 
 const AdminTimer = () => {
   const [timeLeft, setTimeLeft] = useState<string>("00:00:00");
@@ -42,10 +43,10 @@ const AdminTimer = () => {
   useEffect(() => {
     const loadCount = async () => {
       try {
-        const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const apiBase = getApiBase();
         const response = await fetch(`${apiBase}/api/registrations/count`);
         if (!response.ok) return;
-        const data = await response.json();
+        const data = await safeJson<{ count: number }>(response);
         setDiscountCount(Number(data?.count || 0));
       } catch {
         // Ignore count errors.

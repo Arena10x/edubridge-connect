@@ -2,14 +2,15 @@ import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { getCouponLabel, getDiscountInfo } from "@/lib/discount";
+import { getApiBase, safeJson } from "@/lib/api";
 
 const courseOptions = [
   "C with DSA - Rs 999/month",
   "Python with DSA - Rs 999/month",
   "Java with DSA - Rs 999/month",
-  "Web Development + AI - Rs 2499/month",
+  "Web Development with AI - Rs 2999/month",
   "AI & Machine Learning - Rs 2499/month",
-  "App Development + AI - Rs 2499/month",
+  "App Development with AI - Rs 2999/month",
 ];
 
 const Registration = () => {
@@ -26,7 +27,7 @@ const Registration = () => {
     course: "",
   });
 
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const apiBase = getApiBase();
   const discountInfo = getDiscountInfo(discountCount);
   const couponLabel = getCouponLabel(discountInfo.percent);
 
@@ -35,7 +36,7 @@ const Registration = () => {
       try {
         const response = await fetch(`${apiBase}/api/registrations/count`);
         if (!response.ok) return;
-        const data = await response.json();
+        const data = await safeJson<{ count: number }>(response);
         setDiscountCount(Number(data?.count || 0));
       } catch {
         // Fail silently; discount still displays with default count.
@@ -56,11 +57,11 @@ const Registration = () => {
         body: JSON.stringify(form),
       });
 
-      const data = await response.json();
+      const data = await safeJson<{ message?: string; error?: string }>(response);
 
       if (!response.ok) {
         console.error("Backend Error", data);
-        throw new Error(data.message || data.error || "Failed to submit");
+        throw new Error(data?.message || data?.error || "Failed to submit");
       }
 
       setSubmitted(true);
