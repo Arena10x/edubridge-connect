@@ -11,6 +11,13 @@ type Registration = {
   created_at: string;
 };
 
+const formatCoupon = (coupon: string | null) => {
+  if (!coupon) return "-";
+  if (coupon === "AUTO20") return "20% (Auto)";
+  if (coupon === "AUTO10") return "10% (Auto)";
+  return coupon;
+};
+
 const Admin = () => {
   const [rows, setRows] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
@@ -227,7 +234,7 @@ const Admin = () => {
                         <td className="py-2 pr-3">{row.email}</td>
                         <td className="py-2 pr-3">{row.phone}</td>
                         <td className="py-2 pr-3">{row.course}</td> 
-                        <td className="py-2 pr-3">{row.coupon || "-"}</td>
+                        <td className="py-2 pr-3">{formatCoupon(row.coupon)}</td>
                         <td className="py-2 pr-3">
                           {new Date(row.created_at).toLocaleString()}
                         </td>

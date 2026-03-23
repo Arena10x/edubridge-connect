@@ -293,3 +293,13 @@
     50% { opacity: 0.9; }
   }
 }
+
+@layer components {
+  .testimonial-scroll {
+    scrollbar-width: none;
+  }
+
+  .testimonial-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}

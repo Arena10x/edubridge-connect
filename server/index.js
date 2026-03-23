@@ -52,22 +52,40 @@ app.get("/", (_req, res) => {
 });
 
 app.post("/api/registrations", async (req, res) => {
-  const { name, email, phone, course, coupon } = req.body ?? {};
+  const { name, email, phone, course } = req.body ?? {};
 
   if (!name || !email || !phone || !course) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const result = await pool.query(
-      `INSERT INTO registrations (name, email, phone, course, coupon)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, name, email, phone, course, coupon, created_at`,
-      [name, email, phone, course, coupon || null]
-    );
-    return res.status(201).json(result.rows[0]);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const countResult = await client.query("SELECT COUNT(*) FROM registrations");
+      const currentCount = Number(countResult.rows[0]?.count || 0);
+      const discountPercent = currentCount < 10 ? 20 : 10;
+      const coupon = discountPercent === 20 ? "AUTO20" : "AUTO10";
+
+      const result = await client.query(
+        `INSERT INTO registrations (name, email, phone, course, coupon)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id, name, email, phone, course, coupon, created_at`,
+        [name, email, phone, course, coupon]
+      );
+      await client.query("COMMIT");
+      return res.status(201).json({
+        ...result.rows[0],
+        discountPercent,
+      });
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
   } catch (error) {
-    console.error("🔥 FULL ERROR:", error);
+    console.error("FULL ERROR:", error);
     return res.status(500).json({
       error: "Failed to save registration",
       message: error.message,
@@ -89,7 +107,16 @@ app.get("/api/registrations", async (_req, res) => {
   }
 });
 
+app.get("/api/registrations/count", async (_req, res) => {
+  try {
+    const result = await pool.query("SELECT COUNT(*) FROM registrations");
+    return res.json({ count: Number(result.rows[0]?.count || 0) });
+  } catch (error) {
+    console.error("Failed to load registration count", error);
+    return res.status(500).json({ error: "Failed to load registrations count" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-

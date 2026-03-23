@@ -4,6 +4,7 @@ import AdminTimer from "@/components/AdminTimer";
 import Courses from "@/components/Courses";
 import Countdown from "@/components/Countdown";
 import Registration from "@/components/Registration";
+import Portfolio from "@/components/Portfolio";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
@@ -30,6 +31,7 @@ const Index = () => {
         <Hero />
         <AdminTimer />
         <Courses />
+        <Portfolio />
         <Countdown />
         <Registration />
         <Testimonials />

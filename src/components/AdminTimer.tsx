@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { getDiscountInfo } from "@/lib/discount";
 
 const AdminTimer = () => {
   const [timeLeft, setTimeLeft] = useState<string>("00:00:00");
   const [isActive, setIsActive] = useState(false);
+  const [discountCount, setDiscountCount] = useState(0);
 
   useEffect(() => {
     const timerFunc = setInterval(() => {
       const expiry = localStorage.getItem("admin_promo_expiry");
-      
+
       if (!expiry) {
         setIsActive(false);
         return;
@@ -27,7 +29,9 @@ const AdminTimer = () => {
         const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((distance % (1000 * 60)) / 1000);
         setTimeLeft(
-          `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+          `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s
+            .toString()
+            .padStart(2, "0")}`
         );
       }
     }, 1000);
@@ -35,10 +39,28 @@ const AdminTimer = () => {
     return () => clearInterval(timerFunc);
   }, []);
 
-  if (!isActive) return null; // Timer stays hidden until Admin starts it
+  useEffect(() => {
+    const loadCount = async () => {
+      try {
+        const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const response = await fetch(`${apiBase}/api/registrations/count`);
+        if (!response.ok) return;
+        const data = await response.json();
+        setDiscountCount(Number(data?.count || 0));
+      } catch {
+        // Ignore count errors.
+      }
+    };
+
+    loadCount();
+  }, []);
+
+  if (!isActive) return null;
+
+  const discountInfo = getDiscountInfo(discountCount);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="max-w-xl mx-auto mb-12"
@@ -51,7 +73,9 @@ const AdminTimer = () => {
           {timeLeft}
         </div>
         <p className="text-muted-foreground text-sm mt-2">
-          Get 15% off on all courses. Use code <span className="text-primary font-bold">FIRST100</span>
+          {discountInfo.spotsLeft > 0
+            ? `First 10 students get 20% off. ${discountInfo.spotsLeft} spots left.`
+            : "All new registrations now get 10% off automatically."}
         </p>
       </div>
     </motion.div>

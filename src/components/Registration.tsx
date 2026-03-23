@@ -1,43 +1,48 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle } from "lucide-react";
+import { getCouponLabel, getDiscountInfo } from "@/lib/discount";
 
 const courseOptions = [
-  "C with DSA – ₹999/month",
-  "Python with DSA – ₹999/month",
-  "Java with DSA – ₹999/month",
-  "Web Development with AI – ₹2999/month",
-  "AI & Machine Learning – ₹2499/month",
-  "App Development with AI – ₹2999/month",
+  "C with DSA - Rs 999/month",
+  "Python with DSA - Rs 999/month",
+  "Java with DSA - Rs 999/month",
+  "Web Development + AI - Rs 2499/month",
+  "AI & Machine Learning - Rs 2499/month",
+  "App Development + AI - Rs 2499/month",
 ];
 
 const Registration = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
   const [submitted, setSubmitted] = useState(false);
-  const [couponMsg, setCouponMsg] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [discountCount, setDiscountCount] = useState(0);
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
     course: "",
-    coupon: "",
   });
 
-  const validateCoupon = (code: string) => {
-    const upper = code.toUpperCase().trim();
-    if (upper === "TOP50") {
-      setCouponMsg("🎉 50% discount will be applied after payment!");
-    } else if (upper === "FIRST100") {
-      setCouponMsg("✅ 15% discount applied!");
-    } else if (upper.length > 0) {
-      setCouponMsg("❌ Invalid coupon code");
-    } else {
-      setCouponMsg("");
-    }
-  };
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const discountInfo = getDiscountInfo(discountCount);
+  const couponLabel = getCouponLabel(discountInfo.percent);
+
+  useEffect(() => {
+    const loadCount = async () => {
+      try {
+        const response = await fetch(`${apiBase}/api/registrations/count`);
+        if (!response.ok) return;
+        const data = await response.json();
+        setDiscountCount(Number(data?.count || 0));
+      } catch {
+        // Fail silently; discount still displays with default count.
+      }
+    };
+    loadCount();
+  }, [apiBase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +50,6 @@ const Registration = () => {
     setIsSubmitting(true);
 
     try {
-      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const response = await fetch(`${apiBase}/api/registrations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,16 +59,15 @@ const Registration = () => {
       const data = await response.json();
 
       if (!response.ok) {
-      console.error("Backend Error 👉", data);
-      throw new Error(data.message || data.error || "Failed to submit");
-    }
+        console.error("Backend Error", data);
+        throw new Error(data.message || data.error || "Failed to submit");
+      }
 
       setSubmitted(true);
     } catch (err: any) {
-      console.error("Frontend Error 👉", err);
+      console.error("Frontend Error", err);
       setError(err.message || "Something went wrong");
-      }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -82,10 +85,13 @@ const Registration = () => {
             Registration Received!
           </h3>
           <p className="text-muted-foreground mb-1">
-            Student ID: <span className="font-mono font-semibold text-foreground">CV-{Math.random().toString(36).substring(2, 8).toUpperCase()}</span>
+            Student ID:{" "}
+            <span className="font-mono font-semibold text-foreground">
+              CV-{Math.random().toString(36).substring(2, 8).toUpperCase()}
+            </span>
           </p>
           <p className="text-sm text-muted-foreground">
-            You'll receive a confirmation email shortly. Payment link will follow.
+            You will receive a confirmation email shortly. Payment link will follow.
           </p>
         </motion.div>
       </section>
@@ -105,7 +111,8 @@ const Registration = () => {
             Register for a Course
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Fill in your details below. Use coupon <span className="font-mono font-semibold text-foreground">FIRST100</span> for 15% off.
+            First 10 students get <span className="font-semibold text-foreground">20% off</span>. After that, all new
+            registrations receive <span className="font-semibold text-foreground">10% off</span> automatically.
           </p>
         </motion.div>
 
@@ -116,6 +123,24 @@ const Registration = () => {
           onSubmit={handleSubmit}
           className="max-w-lg mx-auto glass-card rounded-3xl p-8 space-y-5"
         >
+          <div className="rounded-2xl border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground/80">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span>
+                Current offer: <span className="font-semibold text-foreground">{discountInfo.percent}% off</span>
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Coupon applied: <span className="font-mono text-foreground">{couponLabel}</span>
+              </span>
+            </div>
+            {discountInfo.spotsLeft > 0 ? (
+              <p className="text-xs text-muted-foreground mt-1">
+                Only {discountInfo.spotsLeft} discounted spots left at 20%.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-1">Offer now applies at 10% for all new registrations.</p>
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
             <input
@@ -162,26 +187,11 @@ const Registration = () => {
             >
               <option value="">Choose a course...</option>
               {courseOptions.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Coupon Code (optional)</label>
-            <input
-              type="text"
-              maxLength={20}
-              value={form.coupon}
-              onChange={(e) => {
-                setForm({ ...form, coupon: e.target.value });
-                validateCoupon(e.target.value);
-              }}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
-              placeholder="e.g. FIRST100"
-            />
-            {couponMsg && (
-              <p className="text-sm mt-1.5 text-muted-foreground">{couponMsg}</p>
-            )}
           </div>
           <button
             type="submit"

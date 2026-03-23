@@ -4,6 +4,7 @@ import { Menu, X, Sun, Moon, Lock } from "lucide-react";
 
 const navLinks = [
   { label: "Courses", href: "#courses" },
+  { label: "Portfolio", href: "#portfolio" },
   { label: "Register", href: "#register" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
@@ -36,7 +37,7 @@ const Navbar = () => {
         <div className="glass-card rounded-2xl px-6 py-3 flex items-center justify-between">
           <a href="#" className="flex items-center gap-2 font-heading font-bold text-lg tracking-tight text-foreground">
           <img 
-              src="/WhatsApp Image 2026-03-22 at 10.08.21 PM.jpeg" 
+              src="public/logo1.JPG-removebg.png" 
               alt="logo" 
               className="h-8 w-8 object-contain"
             />
