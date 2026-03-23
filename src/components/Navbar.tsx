@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className="glass-card rounded-2xl px-6 py-3 flex items-center justify-between">
           <a href="#" className="flex items-center gap-2 font-heading font-bold text-lg tracking-tight text-foreground">
           <img 
-              src="public/logo1.JPG-removebg.png" 
+              src="/logo1.JPG-removebg.png" 
               alt="logo" 
               className="h-8 w-8 object-contain"
             />

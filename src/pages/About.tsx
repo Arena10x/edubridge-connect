@@ -12,11 +12,13 @@ const About = () => {
     />
 
     {/* Top Right Logo */}
-    <img 
-      src="/logo2.png"
-      alt="right-logo"
-      className="absolute top-6 right-6 h-25 w-14 object-contain"
-    />
+    <a href="/admin" aria-label="Go to admin page">
+      <img 
+        src="/logo2.png"
+        alt="right-logo"
+        className="absolute top-6 right-6 h-25 w-14 object-contain"
+      />
+    </a>
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <motion.div 
