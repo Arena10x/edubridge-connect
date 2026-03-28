@@ -30,12 +30,12 @@ app.use(
 );
 app.use(express.json());
 
+// This tells 'pg' to use the single URL string instead of separate pieces
 const pool = new Pool({
-  host: process.env.PGHOST || "localhost",
-  port: process.env.PGPORT ? Number(process.env.PGPORT) : 5432,
-  user: process.env.PGUSER || "postgres",
-  password: process.env.PGPASSWORD || "postgres",
-  database: process.env.PGDATABASE || "edubridge_connect",
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Required for Supabase connections in many environments
+  }
 });
 
 app.get("/health", async (_req, res) => {
