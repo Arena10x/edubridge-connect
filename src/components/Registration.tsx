@@ -8,9 +8,9 @@ const courseOptions = [
   "C with DSA - Rs 999/month",
   "Python with DSA - Rs 999/month",
   "Java with DSA - Rs 999/month",
-  "Web Development with AI - Rs 2999/month",
+  "Web Development with AI - Rs 2499/month",
   "AI & Machine Learning - Rs 2499/month",
-  "App Development with AI - Rs 2999/month",
+  "App Development with AI - Rs 2499/month",
 ];
 
 const Registration = () => {
