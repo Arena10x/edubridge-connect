@@ -199,7 +199,7 @@ const Registration = () => {
             disabled={isSubmitting}
             className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-heading font-semibold text-base hover:opacity-90 transition-opacity active:scale-[0.97] disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Submitting..." : "Register & Proceed to Payment"}
+            {isSubmitting ? "Submitting..." : "Register"}
           </button>
           {error && <p className="text-sm text-red-500 text-center">{error}</p>}
         </motion.form>
