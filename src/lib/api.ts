@@ -1,5 +1,5 @@
 export const getApiBase = () => {
-  const envBase = import.meta.env.VITE_API_URL;
+  const envBase = "https://edubridge-connect.onrender.com/"
   if (envBase && envBase.trim().length > 0) {
     return envBase;
   }
